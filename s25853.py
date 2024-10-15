@@ -1,51 +1,57 @@
-# s25853.py
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+import logging
+
+logging.basicConfig(filename='log.txt', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 
-# Generowanie prostego zbioru danych
-def generate_data():
-    np.random.seed(42)
-
-    # Generowanie pierwszej chmury punktów
-    cloud1 = np.random.randn(100, 2) + np.array([5, 5])
-
-    # Generowanie drugiej chmury punktów
-    cloud2 = np.random.randn(100, 2) + np.array([-5, -5])
-
-    # Łączenie danych
-    X = np.vstack([cloud1, cloud2])
-    y = np.hstack([np.zeros(cloud1.shape[0]), np.ones(cloud2.shape[0])])  # 0 dla cloud1, 1 dla cloud2
-
-    return X, y
+def log_action(message):
+    logging.info(message)
+    print(message)
 
 
-# Trenowanie prostego modelu regresji logistycznej
-def train_model():
-    # Generowanie danych
-    X, y = generate_data()
+# Przykład
+log_action("Rozpoczęcie czyszczenia danych")
 
-    # Podział na zbiór treningowy i testowy
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+client = gspread.authorize(creds)
 
-    # Trenowanie modelu
-    model = LogisticRegression()
-    model.fit(X_train, y_train)
-
-    # Predykcja na zbiorze testowym
-    y_pred = model.predict(X_test)
-
-    # Wyliczenie dokładności
-    accuracy = accuracy_score(y_test, y_pred)
-
-    # Zapis wyniku do pliku accuracy.txt
-    with open('accuracy.txt', 'w') as f:
-        f.write(f"Model trained with accuracy: {accuracy * 100:.2f}%\n")
-
-    print(f"Model trained with accuracy: {accuracy * 100:.2f}%")
+sheet = client.open("spreadsheet").sheet1
+data = sheet.get_all_records()
 
 
-if __name__ == "__main__":
-    train_model()
+def clean_and_standardize(data):
+    # Uzupełnianie braków np. medianą
+    data.fillna(data.median(), inplace=True)
+
+    # Usuwanie wierszy z nadmiarem braków
+    data.dropna(thresh=2, inplace=True)
+
+    # Standaryzacja
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(data.select_dtypes(include=[float, int]))
+
+    # Powrót do DataFrame
+    data.loc[:, data.select_dtypes(include=[float, int]).columns] = scaled_data
+    return data
+
+
+def generate_report(data, original_data):
+    changed = (data != original_data).sum().sum()
+    removed = len(original_data) - len(data)
+
+    report = f"Zmodyfikowane dane: {changed}\nUsunięte dane: {removed}\n"
+
+    with open("report.txt", "w") as f:
+        f.write(report)
+
+
+def main():
+    print("sa")
+
+
+if __name__ == '__main__':
+    main()
