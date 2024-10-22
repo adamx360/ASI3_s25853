@@ -1,6 +1,6 @@
 # .github/workflows/ci.yml
 
-name: CI/CD Pipeline for ML Model Training
+name: Data Processing with Google Sheets
 
 # Wykonuj akcje przy każdym pushu do gałęzi main
 on:
@@ -9,19 +9,53 @@ on:
       - main
 
 jobs:
-  train-model:
+  download-script:
+    # Uruchom tylko, gdy wiadomość commitu zawiera 'deploy'
+    if: contains(github.event.head_commit.message, 'deploy')
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Setup Google Sheets
+
+      # Checkout repo i pobranie skryptu z głównego zadania
+      - uses: actions/checkout@v3
+      - name: Clone repo with script
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          echo "$GOOGLE_SHEETS_CREDENTIALS" > credentials.json
-      - name: Clone repository
-        uses: actions/checkout@v2
+          git clone https://$PAT_TOKEN@github.com/PJATK-ASI-2024/Lab2---Obr-bka-danych.git
+      #    cp Lab2---Obr-bka-danych/generator_danych.py .
+
+      # Setup pythona
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          repository: User/Lab2-s25853
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run data cleaning script
-        run: python3 generator_danych.py -s <args>
+          python-version: '3.8'
+
+      # Instalacja bibliotek
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Set up dostepów do Google Sheets
+      - name: Set up Google Sheets credentials
+        run: |
+          echo "${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}" | base64 -d > creds.json
+
+      # Generowanie pliku csv z pobranego repo
+      - name: Run data processing script
+        run: |
+          python Lab2---Obr-bka-danych/generator_danych.py -s 25853
+
+      # Odczyt pliku csv oraz upload danych do Google Sheets
+      - name: Run data processing script
+        run: |
+          python s25853.py --upload './spreadsheet.csv'
+
+      # Odczyt danych z Google Sheets oraz zwrócenie danych po czyszczeniu i standaryzacji na wyjście
+      - name: Run data processing script
+        run: |
+          python s25853.py --standardize
+
+      # Wyświetlenie raportu po przetwarzaniu
       - name: Display report
-        run: cat report.txt
+        run: |
+          cat report.txt
