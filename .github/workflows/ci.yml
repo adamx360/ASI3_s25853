@@ -48,7 +48,7 @@ jobs:
       # Odczyt pliku csv oraz upload danych do Google Sheets
       - name: Run data processing script
         run: |
-          python s25853.py --upload './spreadsheet.csv'
+          python s25853.py --upload './data_student_25853.csv'
 
       # Odczyt danych z Google Sheets oraz zwrócenie danych po czyszczeniu i standaryzacji na wyjście
       - name: Run data processing script
