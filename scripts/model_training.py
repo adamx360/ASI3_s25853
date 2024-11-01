@@ -6,8 +6,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.linear_model import LinearRegression
 
+
 def main():
-    cleaned_data_path = '../cleaned_data.csv'
+    cleaned_data_path = 'cleaned_data.csv'
 
     try:
         data = pd.read_csv(cleaned_data_path)
@@ -16,7 +17,8 @@ def main():
         print(f'Error loading cleaned data: {e}')
         return
 
-    categorical_columns = ['gender', 'ethnicity', 'fcollege', 'mcollege', 'home', 'urban', 'region', 'education', 'income']
+    categorical_columns = ['gender', 'ethnicity', 'fcollege', 'mcollege', 'home', 'urban', 'region', 'education',
+                           'income']
 
     label_encoders = {}
     for col in categorical_columns:
@@ -52,6 +54,7 @@ def main():
     print(f"R² Score: {r2:.4f}")
     print(f"Mean Absolute Error (MAE): {mae:.4f}")
     print(f"Mean Squared Error (MSE): {mse:.4f}")
+
 
 if __name__ == '__main__':
     main()
