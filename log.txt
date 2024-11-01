@@ -1,0 +1,20 @@
+2024-11-01 23:15:13,873 - INFO - Starting data cleaning process.
+2024-11-01 23:15:13,895 - INFO - Data loaded successfully.
+2024-11-01 23:15:13,925 - INFO - First few rows of the data:
+   rownames  gender ethnicity      score  ...  tuition education income region
+0         1    male     other  39.150002  ...  0.88915        12   high  other
+1         2  female     other  48.869999  ...  0.88915        12    low  other
+2         3    male     other  48.740002  ...  0.88915        12    low  other
+3         4    male      afam  40.400002  ...  0.88915        12    low  other
+4         5  female     other  40.480000  ...  0.88915        13    low  other
+
+[5 rows x 15 columns]
+2024-11-01 23:15:13,951 - INFO - Performing feature engineering...
+2024-11-01 23:15:14,005 - INFO - Feature engineering completed.
+2024-11-01 23:15:14,005 - INFO - Rounded 'score' to two decimal places.
+2024-11-01 23:15:14,005 - INFO - Generating report...
+2024-11-01 23:15:14,007 - INFO - Report generated.
+2024-11-01 23:15:14,007 - INFO - Filled 0 missing values (0.00% of total data).
+2024-11-01 23:15:14,007 - INFO - Removed 0 rows (0.00% of total rows).
+2024-11-01 23:15:14,052 - INFO - Cleaned data saved to cleaned_data.csv.
+2024-11-01 23:15:14,053 - INFO - Data cleaning process completed.
