@@ -10,7 +10,7 @@ def setup_logger():
     logger = logging.getLogger('DataCleaningLogger')
     logger.setLevel(logging.INFO)
     c_handler = logging.StreamHandler()
-    f_handler = logging.FileHandler('log.txt', mode='w')
+    f_handler = logging.FileHandler('../log.txt', mode='w')
     c_handler.setLevel(logging.INFO)
     f_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     c_format = logging.Formatter('%(levelname)s - %(message)s')
@@ -25,7 +25,7 @@ def main():
     logger = setup_logger()
     logger.info('Starting data cleaning process.')
 
-    data_file_path = os.path.join('data', 'CollegeDistance.csv')
+    data_file_path = os.path.join('../data', 'CollegeDistance.csv')
 
     try:
         df = pd.read_csv(data_file_path)
@@ -81,7 +81,7 @@ def main():
     try:
         percent_filled = (filled_values / total_cells) * 100
         percent_removed = (rows_removed / rows_before) * 100
-        with open('report.txt', 'w') as f:
+        with open('../report.txt', 'w') as f:
             f.write(f'Percentage of filled missing data: {percent_filled:.2f}%\n')
             f.write(f'Percentage of removed rows: {percent_removed:.2f}%\n')
             f.write("Data has been cleaned, features engineered, and 'score' rounded to two decimal places.\n")
@@ -94,7 +94,7 @@ def main():
     logger.info(f'Filled {filled_values} missing values ({percent_filled:.2f}% of total data).')
     logger.info(f'Removed {rows_removed} rows ({percent_removed:.2f}% of total rows).')
 
-    cleaned_data_path = 'cleaned_data.csv'
+    cleaned_data_path = '../cleaned_data.csv'
     df.to_csv(cleaned_data_path, index=False)
     logger.info(f'Cleaned data saved to {cleaned_data_path}.')
     logger.info('Data cleaning process completed.')

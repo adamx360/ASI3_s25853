@@ -7,7 +7,7 @@ from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.linear_model import LinearRegression
 
 def main():
-    cleaned_data_path = 'cleaned_data.csv'
+    cleaned_data_path = '../cleaned_data.csv'
 
     try:
         data = pd.read_csv(cleaned_data_path)
