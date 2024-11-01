@@ -1,7 +1,3 @@
-faker
 pandas
-scikit-learn
 numpy
-google-auth
-google-auth-httplib2
-google-api-python-client
+scikit-learn

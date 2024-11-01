@@ -1,0 +1,42 @@
+name: Data Cleaning and Model Training
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Data Cleaning Script
+      run: |
+        python scripts/data_cleaning.py
+
+    - name: Run Model Training Script
+      run: |
+        python scripts/model_training.py
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Results
+        path: |
+          cleaned_data.csv
+          report.txt
+          log.txt
