@@ -1,5 +1,4 @@
-
-name: Lab3 - Analizator Wynikow
+name: Build and Publish Docker Image
 
 on:
   push:
@@ -10,30 +9,28 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.8'
+        python-version: '3.11'
 
-    - name: Install dependencies
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
       run: |
-        pip install pandas scikit-learn matplotlib joblib
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/analizator-wynikow:latest .
 
-    - name: Data Exploration
-      run: python data_exploration.py
-
-    - name: Feature Engineering
-      run: python feature_engineering.py
-
-    - name: Train Model
-      run: python train_model.py
-
-    - name: Evaluate Model
-      run: python evaluate_model.py
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/analizator-wynikow:latest
