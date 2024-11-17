@@ -1,4 +1,0 @@
-Percentage of filled missing data: 0.00%
-Percentage of removed rows: 0.00%
-Data has been cleaned, features engineered, and 'score' rounded to two decimal places.
-Rows with more than one missing field have been removed.
